@@ -1,38 +1,125 @@
-.App {
-  text-align: center;
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+*{
+  font-family: 'Ubuntu', sans-serif;
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.sidebar {
   display: flex;
+  /* position: fixed; */
+  /* left: 0; */
+  width: 15vw;
+  height: 100vh;
+  background-color: hsl(0, 7%, 29%);
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  border-top-right-radius: 00.25em;
+  border-bottom-right-radius: 0.25em;
+}
+
+.backdropForIcons {
+  display: flex;
+  flex-direction: row;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  margin-top: 5px;
+  height: 42px;
+  width: 42px;
+  background-color: hsl(0, 18%, 50%);
+  border-radius: 0.25em;
 }
 
-.App-link {
-  color: #61dafb;
+.activeTab {
+  width: 100%;
+  height:87vh;
+  overflow-y: auto;
+  display: flex;
+}
+.searchTab {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+#app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#searchForm {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 5px;
+}
+
+#search {
+  width: 100%;
+}
+.searchInput {
+  width: 80%;
+  height: 42px;
+  /* margin-top: 10px; */
+  /* margin-bottom: 10px; */
+  border-radius: 0.25em;
+}
+.result{
+  display: flex;
+  width: 90%;
+  height: auto;
+  margin-left: 5px;
+  border-radius: 0.5em;
+  flex-direction: row;
+  align-items: center;
+  font-size: 2vh;
+}
+.result * {
+  margin: 2%;
+}
+.searchInput:active {
+  width: 80%;
+  height: 42px;
+  /* margin-top: 10px; */
+  /* margin-bottom: 10px; */
+  border-radius: 0.25em;
+}
+.submitSearch {
+  /* width: 20%; */
+  width: 50px;
+  background-color: hsl(24, 59%, 58%);
+  border-radius: 25%;
+  margin-left: 5px;
+}
+.thumbnail{
+  border-radius: 5%;
+  height: 10vh;
+}
+#submitSearchWrapper {
+  display: flex;
+}
+
+
+#musicControl{
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  height: 10vh;
+  background-color: chocolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#controllers{
+  width:100%;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  margin-left: 2vw;
+}
+
+#songName{
+  width: 100%;
+  text-align: center;
 }
