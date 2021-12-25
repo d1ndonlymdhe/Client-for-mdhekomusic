@@ -30,7 +30,8 @@ const CreateIcon = (props: IconProps) => {
 const server = "http://192.168.1.144:4000";
 
 function App() {
-  const [isSearchTabACtive, setIsSearchTabActive] = useState(true);
+  const [isSearchTabACtive] = useState(true);
+  // setIsSearchTabActive(true);
   const [loadHowl, setLoadHowl] = useState(false);
   const [searchResults, setSearchResults] = useState<Result[]>([
     {
@@ -115,7 +116,6 @@ function ActiveTab(props: ActiveTabProps) {
 
 function Search(props: searchProps) {
   const {
-    searchResults: searchResult,
     setSearchResult,
     setShowResults,
   } = props;
