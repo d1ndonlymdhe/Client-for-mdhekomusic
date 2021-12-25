@@ -27,7 +27,7 @@ const CreateIcon = (props: IconProps) => {
 // import "./assets/main.css"
 // import { JsxElement } from 'typescript';
 
-const server = "http://192.168.1.144:4000";
+const server = "https://mdhekomusic.herokuapp.com";
 
 function App() {
   const [isSearchTabACtive] = useState(true);
