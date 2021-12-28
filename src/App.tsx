@@ -1,11 +1,8 @@
 import React, { useState, useRef } from "react";
-// import logo from "./logo.svg";
-// import { Howl } from "howler";
 import ReactHowler from "react-howler";
 //@ts-ignore
 import uuid from "react-uuid";
 import "./App.css";
-// import { Search20Filled, Search32Filled as Search32Filled } from '@fluentui/react-icons';
 import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { Icon } from "@fluentui/react";
 initializeIcons();
@@ -13,21 +10,15 @@ const SearchIcon = () => {
   return <Icon iconName="Search"></Icon>;
 };
 
-
 const CreateIcon = (props: IconProps) => {
-  return <div className="iconWrapper" onClick={props.onClick}><Icon iconName={props.iconName}></Icon></div>;
+  return (
+    <div className="iconWrapper" onClick={props.onClick}>
+      <Icon iconName={props.iconName}></Icon>
+    </div>
+  );
 };
-// const Card = (props:React.PropsWithChildren<React.ReactNode|React.ReactNode[]>)=>{
-//  return <div className="card">
-//     {props.children}
-//   </div>
-// }
-// import {}
-// import {Search20Filled} from "@fluentui/react-icons"
-// import "./assets/main.css"
-// import { JsxElement } from 'typescript';
 
-const server = "https://mdhekomusic.herokuapp.com";
+const server = "http://localhost:4000";
 
 function App() {
   const [isSearchTabACtive] = useState(true);
@@ -60,7 +51,7 @@ function App() {
     setCurrentSong,
     setIsPaused,
     setCurrentUrl,
-    setLoadHowl
+    setLoadHowl,
   };
   const ActiveTabProps = { extraClass: "searchTab " };
   const MusicControlProps: MusicControlProps = {
@@ -85,7 +76,11 @@ function App() {
         )}
       </div>
       {loadHowl && (
-        <ReactHowler src={currentUrl} format={["mp3"]} playing={!isPaused}></ReactHowler>
+        <ReactHowler
+          src={currentUrl}
+          format={["mp3"]}
+          playing={!isPaused}
+        ></ReactHowler>
       )}
     </>
   );
@@ -103,10 +98,12 @@ function SideBar() {
   );
 }
 
-function BackdropForIcons(
-  props: React.PropsWithChildren<React.ReactNode[] | React.ReactNode>
-) {
-  return <div className="backdropForIcons">{props.children}</div>;
+function BackdropForIcons(props: BackDropForIConProps) {
+  return (
+    <div className="backdropForIcons" onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
 }
 
 function ActiveTab(props: ActiveTabProps) {
@@ -115,10 +112,7 @@ function ActiveTab(props: ActiveTabProps) {
 }
 
 function Search(props: searchProps) {
-  const {
-    setSearchResult,
-    setShowResults,
-  } = props;
+  const { setSearchResult, setShowResults } = props;
   const [isSearching, setIsSearching] = useState(false);
   const searchTermref = useRef<HTMLInputElement>(null);
   function handleSearchSubmit() {
@@ -162,7 +156,13 @@ function Search(props: searchProps) {
 }
 
 function RenderSearchResult(props: RenderSearchResultProps) {
-  const { searchResults, setCurrentSong, setIsPaused,setCurrentUrl,setLoadHowl } = props;
+  const {
+    searchResults,
+    setCurrentSong,
+    setIsPaused,
+    setCurrentUrl,
+    setLoadHowl,
+  } = props;
   // function play(videoUrl: string) {
   //   const song = new Howl({
   //     src: `${server}/song?url=${videoUrl}`,
@@ -179,8 +179,8 @@ function RenderSearchResult(props: RenderSearchResultProps) {
             className="result card"
             onClick={(e) => {
               setCurrentSong(title);
-              setCurrentUrl(`${server}/song?url=${videoUrl}`)
-              setLoadHowl(true)
+              setCurrentUrl(`${server}/song?url=${videoUrl}`);
+              setLoadHowl(true);
               // play(videoUrl);
               setIsPaused(false);
             }}
@@ -210,10 +210,12 @@ function MusicControl(props: MusicControlProps) {
         <BackdropForIcons>
           <CreateIcon iconName="Previous"></CreateIcon>
         </BackdropForIcons>
-        <BackdropForIcons>
-          <CreateIcon iconName={middleButton} onClick={()=>{
-            props.setIsPaused(!props.isPaused)
-          }}></CreateIcon>
+        <BackdropForIcons
+          onClick={() => {
+            props.setIsPaused(!props.isPaused);
+          }}
+        >
+          <CreateIcon iconName={middleButton}></CreateIcon>
         </BackdropForIcons>
         <BackdropForIcons>
           <CreateIcon iconName="Next"></CreateIcon>
