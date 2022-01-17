@@ -5,6 +5,9 @@ import uuid from "react-uuid";
 import "./App.css";
 import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { Icon } from "@fluentui/react";
+
+const queueLength = 10;
+
 initializeIcons();
 const SearchIcon = () => {
   return <Icon iconName="Search"></Icon>;
@@ -18,12 +21,14 @@ const CreateIcon = (props: IconProps) => {
   );
 };
 
-const server = "https://mdhekomusic.herokuapp.com";
+const server = "http://localhost:4000";
 
 function App() {
-  const [isSearchTabACtive] = useState(true);
-  // setIsSearchTabActive(true);
+  const [isSearchTabACtive, setIsSearchTabActive] = useState(true);
+  const [isQTabActive, setIsQTabActive] = useState(false);
+  const [activeTab, setActiveTab] = useState("searchTab");
   const [loadHowl, setLoadHowl] = useState(false);
+  const [queue, setQueue] = useState<Result[]>([]);
   const [searchResults, setSearchResults] = useState<Result[]>([
     {
       title: "",
@@ -40,7 +45,6 @@ function App() {
   const [currentSong, setCurrentSong] = useState("No Song Playing");
   const [currentUrl, setCurrentUrl] = useState("");
   const [isPaused, setIsPaused] = useState(true);
-  // const [howl,setHowl] = useState<Howl|null>(null);
   const searchProps: searchProps = {
     searchResults,
     setSearchResult: setSearchResults,
@@ -52,29 +56,43 @@ function App() {
     setIsPaused,
     setCurrentUrl,
     setLoadHowl,
+    setQueue,
   };
-  const ActiveTabProps = { extraClass: "searchTab " };
+  const ActiveTabProps = { extraClass: activeTab };
   const MusicControlProps: MusicControlProps = {
     songName: currentSong,
     isPaused,
     setIsPaused,
   };
+  const sideBarProps: sideBarProps = {
+    setIsSearchTabActive,
+    setIsQTabActive,
+    setActiveTab,
+  };
+  const queueProps: queueProps = {
+    queue,
+    setQueue,
+    setCurrentUrl,
+    setIsPaused,
+    setCurrentSong,
+    setLoadHowl,
+    currentUrl: currentUrl,
+  };
   return (
     <>
       <div id="app">
-        <SideBar></SideBar>
-        {isSearchTabACtive && (
-          <ActiveTab {...ActiveTabProps}>
-            <Search {...searchProps}></Search>
-            <MusicControl {...MusicControlProps}></MusicControl>
-            {showResults && (
-              <RenderSearchResult
-                {...RenderSearchResultProps}
-              ></RenderSearchResult>
-            )}
-          </ActiveTab>
-        )}
+        <SideBar {...sideBarProps}></SideBar>
+        <ActiveTab {...ActiveTabProps}>
+          {isSearchTabACtive && <Search {...searchProps}></Search>}
+          {isQTabActive && <Queue {...queueProps}></Queue>}
+          {showResults && isSearchTabACtive && (
+            <RenderSearchResult
+              {...RenderSearchResultProps}
+            ></RenderSearchResult>
+          )}
+        </ActiveTab>
       </div>
+      <MusicControl {...MusicControlProps}></MusicControl>
       {loadHowl && (
         <ReactHowler
           src={currentUrl}
@@ -86,12 +104,32 @@ function App() {
   );
 }
 
-function SideBar() {
+function SideBar(props: sideBarProps) {
+  const { setIsSearchTabActive, setIsQTabActive, setActiveTab } = props;
   return (
     <div className="sidebar">
-      <div id="searchIcon">
+      <div
+        id="searchIcon"
+        onClick={() => {
+          setIsSearchTabActive(true);
+          setIsQTabActive(false);
+          setActiveTab("searchTab");
+        }}
+      >
         <BackdropForIcons>
-          <SearchIcon></SearchIcon>
+          <Icon iconName="Search"></Icon>
+        </BackdropForIcons>
+      </div>
+      <div
+        id="queueIcon"
+        onClick={() => {
+          setIsQTabActive(true);
+          setIsSearchTabActive(false);
+          setActiveTab("queue");
+        }}
+      >
+        <BackdropForIcons>
+          <Icon iconName="BulletedList"></Icon>
         </BackdropForIcons>
       </div>
     </div>
@@ -162,14 +200,8 @@ function RenderSearchResult(props: RenderSearchResultProps) {
     setIsPaused,
     setCurrentUrl,
     setLoadHowl,
+    setQueue,
   } = props;
-  // function play(videoUrl: string) {
-  //   const song = new Howl({
-  //     src: `${server}/song?url=${videoUrl}`,
-  //     format: ["mp3"],
-  //   });
-  //   song.play();
-  // }
   return (
     <div id="searchResults">
       {searchResults.map((result) => {
@@ -182,6 +214,16 @@ function RenderSearchResult(props: RenderSearchResultProps) {
               setCurrentUrl(`${server}/song?url=${videoUrl}`);
               setLoadHowl(true);
               // play(videoUrl);
+              fetch(`${server}/getQueue?url=${videoUrl}`)
+                .then((res) => {
+                  console.log(res);
+                  return res.json();
+                })
+                .then((data) => {
+                  // console.log(data);
+                  console.log(data);
+                  setQueue(data);
+                });
               setIsPaused(false);
             }}
             key={uuid()}
@@ -225,4 +267,77 @@ function MusicControl(props: MusicControlProps) {
   );
 }
 
+function Queue(props: queueProps) {
+  const {
+    queue,
+    setQueue,
+    setCurrentUrl,
+    setIsPaused,
+    setLoadHowl,
+    setCurrentSong,
+    currentUrl,
+  } = props;
+
+  return (
+    <div id="searchTab">
+      <div className="heading queueTitle">Queue</div>
+      <div id="queue">
+        {queue.map((el, index) => {
+          const title = el.title;
+          const thumbnail = el.thumbnail;
+          const url = el.videoUrl;
+          return (
+            <div
+              className="result card"
+              key={uuid()}
+              onClick={(e) => {
+                const skippedSongsCount = index + 1;
+                console.log(url);
+                // console.log(queue.map((el) => youtube_parser(el.videoUrl)));
+                const oldQueueIds = queue.map((el) =>
+                  youtube_parser(el.videoUrl)
+                );
+                oldQueueIds.push(youtube_parser(currentUrl));
+                fetch(
+                  `${server}/getNext?url=${url}&length=${skippedSongsCount}&data=${JSON.stringify(
+                    {
+                      oldQueueIds,
+                    }
+                  )}`
+                )
+                  .then((res) => {
+                    return res.json();
+                  })
+                  .then((data) => {
+                    console.log(data);
+                    let tempQueue = queue;
+                    tempQueue = tempQueue.slice(index, tempQueue.length);
+                    data.forEach((el: Result) => {
+                      tempQueue.push(el);
+                    });
+                    setQueue(tempQueue);
+                    setCurrentUrl(`${server}/song?url=${url}`);
+                    setCurrentSong(title);
+                    setLoadHowl(true);
+                    setIsPaused(false);
+                  });
+              }}
+            >
+              <img src={thumbnail.url} className="thumbnail" alt={title}></img>
+              <span>{title}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default App;
+
+function youtube_parser(url: string) {
+  var regExp =
+    /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  var match = url.match(regExp);
+  return match && match[7].length == 11 ? match[7] : false;
+}
