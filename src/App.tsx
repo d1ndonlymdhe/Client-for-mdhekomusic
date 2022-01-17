@@ -21,7 +21,7 @@ const CreateIcon = (props: IconProps) => {
   );
 };
 
-const server = "https://mdhekomusic.herokuapp.com";
+const server = "http://localhost:4000";
 
 function App() {
   const [isSearchTabACtive, setIsSearchTabActive] = useState(true);
@@ -214,7 +214,7 @@ function RenderSearchResult(props: RenderSearchResultProps) {
               setCurrentUrl(`${server}/song?url=${videoUrl}`);
               setLoadHowl(true);
               // play(videoUrl);
-              fetch(`${server}/getQueue?url=${videoUrl}`)
+              fetch(`${server}/getQueue?url=${videoUrl}`, { mode: "no-cors" })
                 .then((res) => {
                   console.log(res);
                   return res.json();
