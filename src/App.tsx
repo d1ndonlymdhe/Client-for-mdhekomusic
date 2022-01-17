@@ -21,7 +21,7 @@ const CreateIcon = (props: IconProps) => {
   );
 };
 
-const server = "https://mdhekomusic.herokuapp.com/";
+const server = "https://mdhekomusic.herokuapp.com";
 
 function App() {
   const [isSearchTabACtive, setIsSearchTabActive] = useState(true);
