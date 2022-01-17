@@ -6,7 +6,7 @@ import "./App.css";
 import { initializeIcons } from "@fluentui/font-icons-mdl2";
 import { Icon } from "@fluentui/react";
 
-const queueLength = 10;
+// const queueLength = 10;
 
 initializeIcons();
 const SearchIcon = () => {
@@ -339,5 +339,5 @@ function youtube_parser(url: string) {
   var regExp =
     /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
   var match = url.match(regExp);
-  return match && match[7].length == 11 ? match[7] : false;
+  return match && match[7].length === 11 ? match[7] : false;
 }
