@@ -1,9 +1,3 @@
-# About the app
-
-This is the frontend code for my music app.
-Search for a youtube video and play it.
-Built by d1ndonlymdhe
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
