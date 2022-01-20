@@ -22,7 +22,7 @@ const CreateIcon = (props: IconProps) => {
 };
 
 let server = "https://mdhekomusic.herokuapp.com";
-if (window.location.host == "localhost:3000") {
+if (window.location.host === "localhost:3000") {
   server = "http://localhost:4000";
 }
 
