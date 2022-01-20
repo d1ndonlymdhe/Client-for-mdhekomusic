@@ -21,7 +21,10 @@ const CreateIcon = (props: IconProps) => {
   );
 };
 
-const server = "https://mdhekomusic.herokuapp.com";
+let server = "https://mdhekomusic.herokuapp.com";
+if (window.location.host == "localhost:3000") {
+  server = "http://localhost:4000";
+}
 
 function App() {
   const [isSearchTabACtive, setIsSearchTabActive] = useState(true);
@@ -214,7 +217,11 @@ function RenderSearchResult(props: RenderSearchResultProps) {
               setCurrentUrl(`${server}/song?url=${videoUrl}`);
               setLoadHowl(true);
               // play(videoUrl);
-              fetch(`${server}/getQueue?url=${videoUrl}`, { mode: "no-cors" })
+              fetch(
+                `${server}/getQueue?url=${videoUrl}&length=10&data=${JSON.stringify(
+                  { oldQueueIds: [videoUrl] }
+                )}`
+              )
                 .then((res) => {
                   console.log(res);
                   return res.json();
@@ -299,7 +306,7 @@ function Queue(props: queueProps) {
                 );
                 oldQueueIds.push(youtube_parser(currentUrl));
                 fetch(
-                  `${server}/getNext?url=${url}&length=${skippedSongsCount}&data=${JSON.stringify(
+                  `${server}/getQueue?url=${url}&length=${skippedSongsCount}&data=${JSON.stringify(
                     {
                       oldQueueIds,
                     }
